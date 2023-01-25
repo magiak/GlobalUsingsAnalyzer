@@ -23,7 +23,7 @@ namespace GlobalUsingsAnalyzer.Test
         public async Task TestMethod2()
         {
             var test = @"
-    using System;
+    global using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
@@ -33,7 +33,7 @@ namespace GlobalUsingsAnalyzer.Test
     namespace ConsoleApplication1
     {
         class {|#0:TypeName|}
-        {   
+        {
         }
     }";
 
@@ -48,7 +48,7 @@ namespace GlobalUsingsAnalyzer.Test
     namespace ConsoleApplication1
     {
         class TYPENAME
-        {   
+        {
         }
     }";
 

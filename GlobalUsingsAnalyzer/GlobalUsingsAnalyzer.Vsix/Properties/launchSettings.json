@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GlobalUsingsAnalyzer.Vsix": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\lukas\\source\\repos\\Other\\EmptyConsoleApp\\EmptyConsoleApp.sln"
+    }
+  }
+}
