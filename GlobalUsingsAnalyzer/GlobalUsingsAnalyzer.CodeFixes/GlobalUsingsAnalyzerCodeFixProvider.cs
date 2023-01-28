@@ -22,7 +22,8 @@ namespace GlobalUsingsAnalyzer
         public sealed override FixAllProvider GetFixAllProvider()
         {
             // See https://github.com/dotnet/roslyn/blob/main/docs/analyzers/FixAllProvider.md for more information on Fix All Providers
-            return WellKnownFixAllProviders.BatchFixer;
+            //return WellKnownFixAllProviders.BatchFixer;
+            return GlobalUsingsFixAllProvider.Instance;
         }
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
@@ -40,8 +41,8 @@ namespace GlobalUsingsAnalyzer
                 context.RegisterCodeFix(
                     CodeAction.Create(
                         title: CodeFixResources.CodeFixTitle,
-                        createChangedSolution: c => ReplaceUsingWithGlobalAsync(context.Document, usingItem, c)
-                        //equivalenceKey: $"{nameof(CodeFixResources.CodeFixTitle)}-{diagnosticSpan.Start}"
+                        createChangedSolution: c => ReplaceUsingWithGlobalAsync(context.Document, usingItem, c),
+                        equivalenceKey: $"{nameof(CodeFixResources.CodeFixTitle)}-{diagnosticSpan.Start}"
                         ),
                     diagnostic);
             }
