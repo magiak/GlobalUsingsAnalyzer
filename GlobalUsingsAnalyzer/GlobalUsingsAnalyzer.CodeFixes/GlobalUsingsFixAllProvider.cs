@@ -7,8 +7,6 @@ using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace GlobalUsingsAnalyzer
@@ -16,6 +14,12 @@ namespace GlobalUsingsAnalyzer
     public class GlobalUsingsFixAllProvider : FixAllProvider
     {
         public static readonly FixAllProvider Instance = new GlobalUsingsFixAllProvider();
+
+        public override IEnumerable<FixAllScope> GetSupportedFixAllScopes()
+        {
+            return new FixAllScope[] { FixAllScope.Document };
+            //return new[] { FixAllScope.Document, FixAllScope.Project, FixAllScope.Solution }; // TODO add others :)
+        }
 
         public override async Task<CodeAction?> GetFixAsync(FixAllContext fixAllContext)
         {
@@ -75,59 +79,5 @@ namespace GlobalUsingsAnalyzer
 
             return solution;
         }
-
-        public override IEnumerable<FixAllScope> GetSupportedFixAllScopes()
-        {
-            return new FixAllScope[] { FixAllScope.Document };
-            //return new[] { FixAllScope.Document, FixAllScope.Project, FixAllScope.Solution }; // TODO add others :)
-        }
-
-        //public override async Task<CodeAction> GetFixAsync(FixAllContext fixAllContext)
-        //{
-        //    var diagnostics = await fixAllContext.GetDocumentDiagnosticsAsync(fixAllContext.Document);
-
-        //    var actions = ImmutableArray.CreateBuilder<CodeAction>();
-        //    foreach(var diagnostic in diagnostics)
-        //    {
-        //        globalUsingCodeFixProvider.
-        //    }
-
-        //    //return CodeAction.Create("Fix all occurrences", (CancellationToken token, Solution solution) =>
-        //    //{
-        //    //    var newSolution = solution;
-        //    //    foreach(var action in actions)
-        //    //    {
-        //    //        newSolution = action.GetChangedSolution(ct);
-        //    //    }
-        //    //    return Task.FromResult(newSolution);
-        //    //});
-        //}
-
-        //private static Action<CodeAction, ImmutableArray<Diagnostic>> GetRegisterCodeFixAction(
-        //    string? codeActionEquivalenceKey, ArrayBuilder<CodeAction> codeActions)
-        //{
-        //    return (action, diagnostics) =>
-        //    {
-        //        using var _ = ArrayBuilder<CodeAction>.GetInstance(out var builder);
-        //        builder.Push(action);
-        //        while(builder.Count > 0)
-        //        {
-        //            var currentAction = builder.Pop();
-        //            if(currentAction is { EquivalenceKey: var equivalenceKey }
-        //                && codeActionEquivalenceKey == equivalenceKey)
-        //            {
-        //                lock(codeActions)
-        //                    codeActions.Add(currentAction);
-        //            }
-
-        //            foreach(var nestedAction in currentAction.NestedCodeActions)
-        //                builder.Push(nestedAction);
-        //        }
-        //    };
-        //}
-
-        //private async Task<Solution> GetDocumentFixesAsync()
-        //{
-        //}
     }
 }
