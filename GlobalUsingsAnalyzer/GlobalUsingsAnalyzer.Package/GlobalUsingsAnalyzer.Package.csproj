@@ -1,47 +1,55 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
-    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <PackageId>MoveToGlobalUsingsAnalyzer</PackageId>
-    <PackageVersion>1.0.0.0</PackageVersion>
-    <Authors>lukas</Authors>
-    <PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
-    <PackageProjectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</PackageProjectUrl>
-    <PackageIconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</PackageIconUrl>
-    <RepositoryUrl>http://REPOSITORY_URL_HERE_OR_DELETE_THIS_LINE</RepositoryUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>GlobalUsingsAnalyzer</Description>
-    <PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
-    <Copyright>Copyright</Copyright>
-    <PackageTags>GlobalUsingsAnalyzer, analyzers</PackageTags>
-    <DevelopmentDependency>true</DevelopmentDependency>
-    <NoPackageAnalysis>true</NoPackageAnalysis>
+	<PropertyGroup>
+		<Title>Move To Global Usings</Title>
+		<PackageId>MoveToGlobalUsingsAnalyzer</PackageId>
+		<PackageVersion>1.0.1.0</PackageVersion>
+		<Authors>Lukas Kmoch</Authors>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/magiak/GlobalUsingsAnalyzer</RepositoryUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<Description>This is a analyzer and code fix provider for C# that moves usings from the file they are used to a file called Usings.cs.</Description>
+		<PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
+		<Copyright>2023 Lukas Kmoch</Copyright>
+		<PackageTags>global usings, analyzers, C# 10</PackageTags>
+		<DevelopmentDependency>true</DevelopmentDependency>
+		<NoPackageAnalysis>true</NoPackageAnalysis>
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
 
-    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
+		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
 
-    <Title>Move To Global Usings</Title>
-  </PropertyGroup>
+		<Version>1.0.1</Version>
 
-  <ItemGroup>
-    <ProjectReference Include="..\GlobalUsingsAnalyzer.CodeFixes\GlobalUsingsAnalyzer.CodeFixes.csproj" />
-    <ProjectReference Include="..\GlobalUsingsAnalyzer\GlobalUsingsAnalyzer.csproj" />
-  </ItemGroup>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Update="tools\*.ps1" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="" />
-  </ItemGroup>
+	<ItemGroup>
+	  <None Include="..\..\readme.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
 
-  <Target Name="_AddAnalyzersToOutput">
-    <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)\GlobalUsingsAnalyzer.dll" PackagePath="analyzers/dotnet/cs" />
-      <TfmSpecificPackageFile Include="$(OutputPath)\GlobalUsingsAnalyzer.CodeFixes.dll" PackagePath="analyzers/dotnet/cs" />
-    </ItemGroup>
-  </Target>
+	<ItemGroup>
+		<ProjectReference Include="..\GlobalUsingsAnalyzer.CodeFixes\GlobalUsingsAnalyzer.CodeFixes.csproj" />
+		<ProjectReference Include="..\GlobalUsingsAnalyzer\GlobalUsingsAnalyzer.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="tools\*.ps1" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<Target Name="_AddAnalyzersToOutput">
+		<ItemGroup>
+			<TfmSpecificPackageFile Include="$(OutputPath)\GlobalUsingsAnalyzer.dll" PackagePath="analyzers/dotnet/cs" />
+			<TfmSpecificPackageFile Include="$(OutputPath)\GlobalUsingsAnalyzer.CodeFixes.dll" PackagePath="analyzers/dotnet/cs" />
+		</ItemGroup>
+	</Target>
 
 </Project>

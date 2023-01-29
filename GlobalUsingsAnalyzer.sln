@@ -3,15 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalUsingsAnalyzer", "GlobalUsingsAnalyzer\GlobalUsingsAnalyzer\GlobalUsingsAnalyzer.csproj", "{1B463482-B3E6-4E5B-9239-E5B36B30D6BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalUsingsAnalyzer", "GlobalUsingsAnalyzer\GlobalUsingsAnalyzer\GlobalUsingsAnalyzer.csproj", "{1B463482-B3E6-4E5B-9239-E5B36B30D6BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalUsingsAnalyzer.CodeFixes", "GlobalUsingsAnalyzer\GlobalUsingsAnalyzer.CodeFixes\GlobalUsingsAnalyzer.CodeFixes.csproj", "{BD29924A-2152-4E4F-A381-7F7CDF89D6E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalUsingsAnalyzer.CodeFixes", "GlobalUsingsAnalyzer\GlobalUsingsAnalyzer.CodeFixes\GlobalUsingsAnalyzer.CodeFixes.csproj", "{BD29924A-2152-4E4F-A381-7F7CDF89D6E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalUsingsAnalyzer.Package", "GlobalUsingsAnalyzer\GlobalUsingsAnalyzer.Package\GlobalUsingsAnalyzer.Package.csproj", "{B35555CE-44BA-4C70-BCC9-EC0C13869361}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalUsingsAnalyzer.Package", "GlobalUsingsAnalyzer\GlobalUsingsAnalyzer.Package\GlobalUsingsAnalyzer.Package.csproj", "{B35555CE-44BA-4C70-BCC9-EC0C13869361}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalUsingsAnalyzer.Test", "GlobalUsingsAnalyzer\GlobalUsingsAnalyzer.Test\GlobalUsingsAnalyzer.Test.csproj", "{6EDA6D27-055C-4C4B-9045-64D66A05B315}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalUsingsAnalyzer.Test", "GlobalUsingsAnalyzer\GlobalUsingsAnalyzer.Test\GlobalUsingsAnalyzer.Test.csproj", "{6EDA6D27-055C-4C4B-9045-64D66A05B315}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalUsingsAnalyzer.Vsix", "GlobalUsingsAnalyzer\GlobalUsingsAnalyzer.Vsix\GlobalUsingsAnalyzer.Vsix.csproj", "{261161EF-03D4-4343-B69D-3FBEAB8682AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalUsingsAnalyzer.Vsix", "GlobalUsingsAnalyzer\GlobalUsingsAnalyzer.Vsix\GlobalUsingsAnalyzer.Vsix.csproj", "{261161EF-03D4-4343-B69D-3FBEAB8682AF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{8DFDD16D-8ADA-4B62-AB5B-CB5B362994F8}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
