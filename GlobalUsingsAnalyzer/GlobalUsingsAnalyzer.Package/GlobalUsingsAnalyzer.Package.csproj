@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>GlobalUsingsAnalyzer</PackageId>
+    <PackageId>MoveToGlobalUsingsAnalyzer</PackageId>
     <PackageVersion>1.0.0.0</PackageVersion>
     <Authors>lukas</Authors>
     <PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
@@ -24,6 +24,8 @@
     <NoPackageAnalysis>true</NoPackageAnalysis>
 
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
+
+    <Title>Move To Global Usings</Title>
   </PropertyGroup>
 
   <ItemGroup>
