@@ -10,7 +10,8 @@
 	<PropertyGroup>
 		<Title>Move To Global Usings</Title>
 		<PackageId>MoveToGlobalUsingsAnalyzer</PackageId>
-		<PackageVersion>1.1.1.0</PackageVersion>
+		<PackageVersion>1.2.0.0</PackageVersion>
+		<Version>1.2.0</Version>
 		<Authors>Lukas Kmoch</Authors>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/magiak/GlobalUsingsAnalyzer</RepositoryUrl>
@@ -25,7 +26,6 @@
 
 		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
 
-		<Version>1.1.1</Version>
 
 	</PropertyGroup>
 

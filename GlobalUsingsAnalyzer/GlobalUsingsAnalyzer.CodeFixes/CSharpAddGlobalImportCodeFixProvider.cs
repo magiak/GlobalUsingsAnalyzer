@@ -1,50 +1,64 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeActions;
+﻿using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
-using System;
+using Microsoft.CodeAnalysis;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Threading;
+using System.Linq;
+using Microsoft.CodeAnalysis.FindSymbols;
 
 namespace GlobalUsingsAnalyzer
 {
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(GlobalUsingsAnalyzerCodeFixProvider)), Shared]
-    public class GlobalUsingsAnalyzerCodeFixProvider : CodeFixProvider
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CSharpAddGlobalImportCodeFixProvider)), Shared]
+    public class CSharpAddGlobalImportCodeFixProvider : CodeFixProvider
     {
         public override sealed ImmutableArray<string> FixableDiagnosticIds
         {
-            get { return ImmutableArray.Create(GlobalUsingsAnalyzerAnalyzer.DiagnosticId); }
+            get { return ImmutableArray.Create("CS0246"); }
         }
 
         public sealed override FixAllProvider GetFixAllProvider()
         {
             // See https://github.com/dotnet/roslyn/blob/main/docs/analyzers/FixAllProvider.md for more information on Fix All Providers
             //return WellKnownFixAllProviders.BatchFixer;
-            return GlobalUsingsFixAllProvider.Instance;
+            return null; // Fix All is not supported
         }
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+            var semanticModel = await context.Document.GetSemanticModelAsync();
 
             foreach(var diagnostic in context.Diagnostics)
             {
-                var fileName = diagnostic.Properties.ContainsKey("FileName") ? diagnostic.Properties["FileName"] : "Usings.cs";
                 var diagnosticSpan = diagnostic.Location.SourceSpan;
+                var node = root.FindNode(diagnosticSpan);
+                var identifier = (node as IdentifierNameSyntax).GetText().ToString();
 
-                // Find the type declaration identified by the diagnostic.
-                var usingItem = (UsingDirectiveSyntax)root.FindNode(diagnosticSpan);
+                var possibleDeclarations = await SymbolFinder.FindDeclarationsAsync(context.Document.Project, identifier, false);
+
+                if(possibleDeclarations.Count() != 1)
+                {
+                    return;
+                }
+
+                var declaration = possibleDeclarations.First();
+                var namespaceSymbol = declaration.ContainingNamespace;
+                var namespaceName = namespaceSymbol.ToDisplayString();
+                var usingItem = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(namespaceName));
+
+                usingItem = usingItem.WithGlobalKeyword(SyntaxFactory.Token(SyntaxKind.GlobalKeyword));
+
+                var fileName = diagnostic.Properties.ContainsKey("FileName") ? diagnostic.Properties["FileName"] : "Usings.cs";
 
                 // Register a code action that will invoke the fix.
                 context.RegisterCodeFix(
                     CodeAction.Create(
-                        title: CodeFixResources.CodeFixTitle,
+                        title: $"global using {namespaceName}",
                         createChangedSolution: c => ReplaceUsingWithGlobalAsync(context.Document, usingItem, fileName, c),
                         equivalenceKey: $"{nameof(CodeFixResources.CodeFixTitle)}-{diagnosticSpan.Start}"
                         ),
@@ -55,10 +69,6 @@ namespace GlobalUsingsAnalyzer
         private async Task<Solution> ReplaceUsingWithGlobalAsync(Microsoft.CodeAnalysis.Document document, UsingDirectiveSyntax usingItem, string usingFileName, CancellationToken cancellationToken)
         {
             CompilationUnitSyntax root = (CompilationUnitSyntax)await document.GetSyntaxRootAsync(cancellationToken);
-
-            // Get and remove using from the original file
-            root = root.RemoveNode(usingItem, SyntaxRemoveOptions.KeepNoTrivia);
-            //root = root.WithAdditionalAnnotations(Formatter.Annotation);
 
             // Create the Using.cs file
             var usingsDocument = document.Project.Documents.FirstOrDefault(x => x.Name == usingFileName);
@@ -71,18 +81,12 @@ namespace GlobalUsingsAnalyzer
 
             // Add the using to the Using.cs file
             var usingsDocumentRoot = (CompilationUnitSyntax)await usingsDocument.GetSyntaxRootAsync();
-            var globalToken = SyntaxFactory.Token(SyntaxKind.GlobalKeyword);
-            var globalUsingItem = usingItem.WithGlobalKeyword(globalToken);
-            usingsDocumentRoot = usingsDocumentRoot.AddUsings(globalUsingItem);
-            //usingsDocumentRoot = usingsDocumentRoot.WithAdditionalAnnotations(Formatter.Annotation);
+            usingsDocumentRoot = usingsDocumentRoot.AddUsings(usingItem);
             usingsDocument = usingsDocument.WithSyntaxRoot(usingsDocumentRoot);
 
             var solution = usingsDocument.Project.Solution;
 
-            // Update original document - remove all usings
-            solution = solution.WithDocumentSyntaxRoot(document.Id, root);
-
-            // Update the new document
+            // Update the Using.cs document
             solution = solution.WithDocumentSyntaxRoot(usingsDocument.Id, usingsDocumentRoot);
 
             return solution;

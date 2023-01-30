@@ -10,6 +10,20 @@ This is a analyzer and code fix provider for C# that moves usings from the file 
 - dotnet_diagnostic.global_usings.severity = suggestion
 - dotnet_diagnostic.global_usings.file_name = Usings.cs
 
+## Versions - features
+
+### v1.0.0
+Move to Global Usings
+![MoveToGlobal](MoveToGlobal.png)
+
+### v1.1.0
+Support for .editorconfig - severity and file name
+
+### v1.2.0
+CodeFix CS0246
+![CS0246](CS0246TheTypeOrNamespaceCouldNotBeFound.png)
+
+
 ## Implementation
 
 ### CodeFixProvider
