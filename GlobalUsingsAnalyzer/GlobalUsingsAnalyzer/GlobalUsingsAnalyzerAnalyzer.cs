@@ -43,10 +43,11 @@ namespace GlobalUsingsAnalyzer
             var usingNode = (UsingDirectiveSyntax)context.Node;
             if(usingNode.GlobalKeyword.IsKind(SyntaxKind.None))
             {
-                var properties = new Dictionary<string, string>
+                var properties = new Dictionary<string, string>();
+                if(!string.IsNullOrEmpty(fileName))
                 {
-                    { "FileName", fileName }
-                };
+                    properties.Add("FileName", fileName);
+                }
 
                 var diagnostic = Diagnostic.Create(Rule, usingNode.GetLocation(), properties.ToImmutableDictionary(), usingNode.Name);
                 context.ReportDiagnostic(diagnostic);
