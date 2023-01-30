@@ -5,6 +5,11 @@ This is a analyzer and code fix provider for C# that moves usings from the file 
 1. Install the nuget package
 2. The code fix will appear as a lightbulb with action 'Move to Global Usings' next to using statement, or you can use the **Fix all** button to fix all occurrences in the document at once.
 
+## Configuration
+### .editorconfig
+dotnet_diagnostic.global_usings.severity = suggestion
+dotnet_diagnostic.global_usings.file_name = Usings.cs
+
 ## CodeFixProvider
 The **GlobalUsingsAnalyzerCodeFixProvider** class is responsible for providing the code fix. It contains the following methods:
 

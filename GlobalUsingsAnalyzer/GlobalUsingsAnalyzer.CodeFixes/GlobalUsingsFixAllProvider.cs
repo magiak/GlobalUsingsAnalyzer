@@ -25,7 +25,7 @@ namespace GlobalUsingsAnalyzer
         {
             Solution solution = fixAllContext.Scope switch
             {
-                FixAllScope.Document => await ReplaceAllUsingsWithGlobalAsync(fixAllContext.Document).ConfigureAwait(false),
+                FixAllScope.Document => await ReplaceAllUsingsWithGlobalAsync(fixAllContext, fixAllContext.Document).ConfigureAwait(false),
                 _ => throw new NotSupportedException($"Scope {fixAllContext.Scope} is not supported by this fix all provider."),
             };
 
@@ -36,8 +36,11 @@ namespace GlobalUsingsAnalyzer
                 "Move to Global Usings", c => Task.FromResult(solution));
         }
 
-        private async Task<Solution> ReplaceAllUsingsWithGlobalAsync(Document document)
+        private async Task<Solution> ReplaceAllUsingsWithGlobalAsync(FixAllContext fixAllContext, Document document)
         {
+            var diagnostics = await fixAllContext.GetDocumentDiagnosticsAsync(document);
+            var fileName = diagnostics.First().Properties.ContainsKey("FileName") ? diagnostics.First().Properties["FileName"] : "Usings.cs";
+
             CompilationUnitSyntax root = (CompilationUnitSyntax)await document.GetSyntaxRootAsync();
 
             // Get and remove usings from the original file
@@ -54,13 +57,12 @@ namespace GlobalUsingsAnalyzer
             root = root.WithAdditionalAnnotations(Formatter.Annotation);
 
             // Create the Using.cs file
-            var usingFileName = "Usings.cs";
-            var usingsDocument = document.Project.Documents.FirstOrDefault(x => x.Name == usingFileName);
+            var usingsDocument = document.Project.Documents.FirstOrDefault(x => x.Name == fileName);
             if(usingsDocument == null)
             {
                 var projectGenerator = SyntaxGenerator.GetGenerator(document.Project);
                 var usingsSyntaxNode = projectGenerator.CompilationUnit();
-                usingsDocument = document.Project.AddDocument(usingFileName, usingsSyntaxNode);
+                usingsDocument = document.Project.AddDocument(fileName, usingsSyntaxNode);
             }
 
             // Add the usings to the Using.cs file

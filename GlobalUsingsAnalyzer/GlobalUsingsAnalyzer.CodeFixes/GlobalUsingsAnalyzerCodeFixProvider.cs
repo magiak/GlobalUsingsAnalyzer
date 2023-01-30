@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
+using System;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Threading;
@@ -32,6 +33,7 @@ namespace GlobalUsingsAnalyzer
 
             foreach(var diagnostic in context.Diagnostics)
             {
+                var fileName = diagnostic.Properties.ContainsKey("FileName") ? diagnostic.Properties["FileName"] : "Usings.cs";
                 var diagnosticSpan = diagnostic.Location.SourceSpan;
 
                 // Find the type declaration identified by the diagnostic.
@@ -41,14 +43,14 @@ namespace GlobalUsingsAnalyzer
                 context.RegisterCodeFix(
                     CodeAction.Create(
                         title: CodeFixResources.CodeFixTitle,
-                        createChangedSolution: c => ReplaceUsingWithGlobalAsync(context.Document, usingItem, c),
+                        createChangedSolution: c => ReplaceUsingWithGlobalAsync(context.Document, usingItem, fileName, c),
                         equivalenceKey: $"{nameof(CodeFixResources.CodeFixTitle)}-{diagnosticSpan.Start}"
                         ),
                     diagnostic);
             }
         }
 
-        private async Task<Solution> ReplaceUsingWithGlobalAsync(Document document, UsingDirectiveSyntax usingItem, CancellationToken cancellationToken)
+        private async Task<Solution> ReplaceUsingWithGlobalAsync(Document document, UsingDirectiveSyntax usingItem, string usingFileName, CancellationToken cancellationToken)
         {
             CompilationUnitSyntax root = (CompilationUnitSyntax)await document.GetSyntaxRootAsync(cancellationToken);
 
@@ -57,7 +59,6 @@ namespace GlobalUsingsAnalyzer
             //root = root.WithAdditionalAnnotations(Formatter.Annotation);
 
             // Create the Using.cs file
-            var usingFileName = "Usings.cs";
             var usingsDocument = document.Project.Documents.FirstOrDefault(x => x.Name == usingFileName);
             if(usingsDocument == null)
             {
