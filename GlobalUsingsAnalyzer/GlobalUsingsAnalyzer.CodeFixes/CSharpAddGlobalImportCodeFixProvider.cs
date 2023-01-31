@@ -31,13 +31,32 @@ namespace GlobalUsingsAnalyzer
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+            if(root == null)
+            {
+                return;
+            }
+
             var semanticModel = await context.Document.GetSemanticModelAsync();
 
             foreach(var diagnostic in context.Diagnostics)
             {
                 var diagnosticSpan = diagnostic.Location.SourceSpan;
                 var node = root.FindNode(diagnosticSpan);
-                var identifier = (node as IdentifierNameSyntax).GetText().ToString();
+                if(node == null)
+                {
+                    continue;
+                }
+                
+                // Known note types - SimpleBaseTypeSyntax and IdentifierNameSyntax
+                string? identifier = node.GetText().ToString();
+
+                if(identifier == null)
+                {
+                    continue;
+                }
+
+                // "DbContext\r\n" => "DbContext"
+                identifier = identifier.Replace("\r\n", string.Empty);
 
                 var possibleDeclarations = await SymbolFinder.FindDeclarationsAsync(context.Document.Project, identifier, false);
 
