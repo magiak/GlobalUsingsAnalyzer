@@ -46,7 +46,7 @@ namespace GlobalUsingsAnalyzer
                 {
                     continue;
                 }
-                
+
                 // Known note types - SimpleBaseTypeSyntax and IdentifierNameSyntax
                 string? identifier = node.GetText().ToString();
 
@@ -55,33 +55,30 @@ namespace GlobalUsingsAnalyzer
                     continue;
                 }
 
-                // "DbContext\r\n" => "DbContext"
-                identifier = identifier.Replace("\r\n", string.Empty);
+                // "DbContext\r\n" => "DbContext" and "DbContext " => "DbContext"
+                identifier = identifier.Replace("\r\n", string.Empty).Trim();
 
-                var possibleDeclarations = await SymbolFinder.FindDeclarationsAsync(context.Document.Project, identifier, false);
+                var possibleDeclarations = await SymbolFinder.FindDeclarationsAsync(context.Document.Project, identifier, false); // TODO maybe await SymbolFinder.FindSourceDeclarationsAsync(context.Document.Project.Solution, identifier, false);
 
-                if(possibleDeclarations.Count() != 1)
+                foreach(var declaration in possibleDeclarations)
                 {
-                    return;
+                    var namespaceSymbol = declaration.ContainingNamespace;
+                    var namespaceName = namespaceSymbol.ToDisplayString();
+                    var usingItem = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(namespaceName));
+
+                    usingItem = usingItem.WithGlobalKeyword(SyntaxFactory.Token(SyntaxKind.GlobalKeyword));
+
+                    var fileName = diagnostic.Properties.ContainsKey("FileName") ? diagnostic.Properties["FileName"] : "Usings.cs";
+
+                    // Register a code action that will invoke the fix.
+                    context.RegisterCodeFix(
+                        CodeAction.Create(
+                            title: $"global using {namespaceName}",
+                            createChangedSolution: c => ReplaceUsingWithGlobalAsync(context.Document, usingItem, fileName, c),
+                            equivalenceKey: $"{nameof(CodeFixResources.CodeFixTitle)}-{diagnosticSpan.Start}"
+                            ),
+                        diagnostic);
                 }
-
-                var declaration = possibleDeclarations.First();
-                var namespaceSymbol = declaration.ContainingNamespace;
-                var namespaceName = namespaceSymbol.ToDisplayString();
-                var usingItem = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(namespaceName));
-
-                usingItem = usingItem.WithGlobalKeyword(SyntaxFactory.Token(SyntaxKind.GlobalKeyword));
-
-                var fileName = diagnostic.Properties.ContainsKey("FileName") ? diagnostic.Properties["FileName"] : "Usings.cs";
-
-                // Register a code action that will invoke the fix.
-                context.RegisterCodeFix(
-                    CodeAction.Create(
-                        title: $"global using {namespaceName}",
-                        createChangedSolution: c => ReplaceUsingWithGlobalAsync(context.Document, usingItem, fileName, c),
-                        equivalenceKey: $"{nameof(CodeFixResources.CodeFixTitle)}-{diagnosticSpan.Start}"
-                        ),
-                    diagnostic);
             }
         }
 
