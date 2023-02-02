@@ -10,8 +10,8 @@
 	<PropertyGroup>
 		<Title>Move To Global Usings</Title>
 		<PackageId>MoveToGlobalUsingsAnalyzer</PackageId>
-		<PackageVersion>1.2.2.0</PackageVersion>
-		<Version>1.2.2</Version>
+		<PackageVersion>1.2.3.0</PackageVersion>
+		<Version>1.2.3</Version>
 		<Authors>Lukas Kmoch</Authors>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/magiak/GlobalUsingsAnalyzer</RepositoryUrl>

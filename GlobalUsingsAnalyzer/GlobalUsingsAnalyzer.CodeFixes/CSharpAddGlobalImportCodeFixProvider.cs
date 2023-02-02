@@ -58,7 +58,7 @@ namespace GlobalUsingsAnalyzer
                 // "DbContext\r\n" => "DbContext" and "DbContext " => "DbContext"
                 identifier = identifier.Replace("\r\n", string.Empty).Trim();
 
-                var possibleDeclarations = await SymbolFinder.FindDeclarationsAsync(context.Document.Project, identifier, false); // TODO maybe await SymbolFinder.FindSourceDeclarationsAsync(context.Document.Project.Solution, identifier, false);
+                var possibleDeclarations = await SymbolFinder.FindDeclarationsAsync(context.Document.Project, identifier, false, SymbolFilter.Type); // TODO maybe await SymbolFinder.FindSourceDeclarationsAsync(context.Document.Project.Solution, identifier, false);
 
                 foreach(var declaration in possibleDeclarations)
                 {
@@ -75,7 +75,8 @@ namespace GlobalUsingsAnalyzer
                         CodeAction.Create(
                             title: $"global using {namespaceName}",
                             createChangedSolution: c => ReplaceUsingWithGlobalAsync(context.Document, usingItem, fileName, c),
-                            equivalenceKey: $"{nameof(CodeFixResources.CodeFixTitle)}-{diagnosticSpan.Start}"
+                            null
+                            //equivalenceKey: $"{nameof(CodeFixResources.CodeFixTitle)}-{diagnosticSpan.Start}"
                             ),
                         diagnostic);
                 }
