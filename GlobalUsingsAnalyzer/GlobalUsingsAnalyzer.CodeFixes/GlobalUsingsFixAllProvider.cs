@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -68,8 +69,9 @@ namespace GlobalUsingsAnalyzer
 
             // Add the usings to the Using.cs file
             var usingsDocumentRoot = (CompilationUnitSyntax)await usingsDocument.GetSyntaxRootAsync();
-            usingsDocumentRoot = usingsDocumentRoot.AddUsings(newUsings.ToArray());
-            usingsDocumentRoot = usingsDocumentRoot.WithAdditionalAnnotations(Formatter.Annotation);
+
+            usingsDocumentRoot = GlobalUsingCodeAction.AddUsings(fixAllContext.Project.AnalyzerOptions, usingsDocumentRoot, newUsings);
+            //usingsDocumentRoot = usingsDocumentRoot.WithAdditionalAnnotations(Formatter.Annotation);
             usingsDocument = usingsDocument.WithSyntaxRoot(usingsDocumentRoot);
 
             var solution = usingsDocument.Project.Solution;

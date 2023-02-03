@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
 using Microsoft.CodeAnalysis.FindSymbols;
+using System.Reflection.Metadata;
 
 namespace GlobalUsingsAnalyzer
 {
@@ -75,8 +76,7 @@ namespace GlobalUsingsAnalyzer
                         CodeAction.Create(
                             title: $"global using {namespaceName}",
                             createChangedSolution: c => ReplaceUsingWithGlobalAsync(context.Document, usingItem, fileName, c),
-                            null
-                            //equivalenceKey: $"{nameof(CodeFixResources.CodeFixTitle)}-{diagnosticSpan.Start}"
+                            equivalenceKey: $"{nameof(CodeFixResources.CodeFixTitle)}-{namespaceName}"
                             ),
                         diagnostic);
                 }
@@ -98,7 +98,7 @@ namespace GlobalUsingsAnalyzer
 
             // Add the using to the Using.cs file
             var usingsDocumentRoot = (CompilationUnitSyntax)await usingsDocument.GetSyntaxRootAsync();
-            usingsDocumentRoot = usingsDocumentRoot.AddUsings(usingItem);
+            usingsDocumentRoot = GlobalUsingCodeAction.AddUsings(document.Project.AnalyzerOptions, usingsDocumentRoot, usingItem);
             usingsDocument = usingsDocument.WithSyntaxRoot(usingsDocumentRoot);
 
             var solution = usingsDocument.Project.Solution;

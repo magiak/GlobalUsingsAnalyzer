@@ -9,6 +9,7 @@ This is a analyzer and code fix provider for C# that moves usings from the file 
 ### .editorconfig
 - dotnet_diagnostic.global_usings.severity = suggestion
 - dotnet_diagnostic.global_usings.file_name = Usings.cs
+- dotnet_diagnostic.global_usings.sort = **true** | false
 
 ## Versions - features
 
@@ -23,6 +24,10 @@ Support for .editorconfig - severity and file name
 CodeFix CS0246
 ![CS0246](CS0246TheTypeOrNamespaceCouldNotBeFound.png)
 
+### v1.3.0
+Global usings are automatically sorted
+- .editorconfig **dotnet_diagnostic.global_usings.sort** = true | false
+- Support for **dotnet_sort_system_directives_first**
 
 ## Implementation
 

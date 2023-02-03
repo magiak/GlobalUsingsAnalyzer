@@ -73,7 +73,7 @@ namespace GlobalUsingsAnalyzer
             var usingsDocumentRoot = (CompilationUnitSyntax)await usingsDocument.GetSyntaxRootAsync();
             var globalToken = SyntaxFactory.Token(SyntaxKind.GlobalKeyword);
             var globalUsingItem = usingItem.WithGlobalKeyword(globalToken);
-            usingsDocumentRoot = usingsDocumentRoot.AddUsings(globalUsingItem);
+            usingsDocumentRoot = GlobalUsingCodeAction.AddUsings(document.Project.AnalyzerOptions, usingsDocumentRoot, globalUsingItem);
             //usingsDocumentRoot = usingsDocumentRoot.WithAdditionalAnnotations(Formatter.Annotation);
             usingsDocument = usingsDocument.WithSyntaxRoot(usingsDocumentRoot);
 
