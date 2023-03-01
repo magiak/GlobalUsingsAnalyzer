@@ -30,13 +30,17 @@ namespace GlobalUsingsAnalyzer
                 if(systemGetResult && systemDirectiveFirst.ToLower() == "true")
                 {
                     allUsings = allUsings
-                        .OrderBy(u => u.Name.GetText().ToString().StartsWith("System") ? 0 : 1)
+                        .OrderBy(u => u.Alias == null ? 0 : 1) // sort aliases last
+                        .ThenBy(u => u.Name.GetText().ToString().StartsWith("System") ? 0 : 1)
                         .ThenBy(u => u.Name.GetText().ToString())
                         .ToList();
                 }
                 else
                 {
-                    allUsings = allUsings.OrderBy(u => u.Name.GetText().ToString()).ToList();
+                    allUsings = allUsings
+                        .OrderBy(u => u.Alias == null ? 0 : 1) // sort aliases last
+                        .ThenBy(u => u.Name.GetText().ToString())
+                        .ToList();
                 }
 
                 // dotnet_sort_system_directives_first is unnecessary

@@ -1,16 +1,15 @@
-﻿using Microsoft.CodeAnalysis.CodeActions;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
-using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.FindSymbols;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Linq;
-using Microsoft.CodeAnalysis.FindSymbols;
-using System.Reflection.Metadata;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GlobalUsingsAnalyzer
 {
@@ -20,6 +19,8 @@ namespace GlobalUsingsAnalyzer
         public override sealed ImmutableArray<string> FixableDiagnosticIds
         {
             get { return ImmutableArray.Create("CS0246"); }
+
+            // TODO CS0616, ...
         }
 
         public sealed override FixAllProvider GetFixAllProvider()

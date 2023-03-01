@@ -29,6 +29,15 @@ Global usings are automatically sorted
 - .editorconfig **dotnet_diagnostic.global_usings.sort** = true | false
 - Support for **dotnet_sort_system_directives_first**
 
+### v1.4.0
+Sort - global usings with alias are always last. The alias is not considered when sorting.
+
+Example:
+```
+global using ZNamespace;
+global using MyService = ANamespace.MyService;
+```
+
 ## Implementation
 
 ### CodeFixProvider
